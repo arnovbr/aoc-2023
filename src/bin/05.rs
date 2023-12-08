@@ -1,10 +1,12 @@
 advent_of_code::solution!(5);
 
 pub fn part_one(input: &str) -> Option<u32> {
+    print!("{}", input);
     None
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
+    print!("{}", input);
     None
 }
 
