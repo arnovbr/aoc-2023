@@ -67,7 +67,7 @@ pub fn part_two(input: &str) -> Option<i32> {
         sum_of_preceding_numbers += find_preceding_number(&sequence);
     }
 
-    Some(sum_of_preceding_numbers as i32)
+    Some(sum_of_preceding_numbers)
 }
 
 
