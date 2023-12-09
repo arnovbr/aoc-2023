@@ -6,7 +6,7 @@ fn parse_line_to_sequence(line: &str) -> Vec<i32> {
         .collect()
 }
 
-fn find_next_number(sequence: &[i32]) -> i32 {
+fn compute_layers(sequence: &[i32]) -> Vec<Vec<i32>> {
     let mut layers = vec![sequence.to_vec()];
 
     // get down to layers with only zeros
@@ -19,13 +19,31 @@ fn find_next_number(sequence: &[i32]) -> i32 {
         layers.push(new_layer);
     }
 
-    // get next number
+    layers
+}
+
+fn find_next_number(sequence: &[i32]) -> i32 {
+    let mut layers = compute_layers(sequence);
+
+    // extrapolate next number
     for i in (1..layers.len()).rev() {
         let last_num = layers[i - 1].last().unwrap() + layers[i].last().unwrap();
         layers[i - 1].push(last_num);
     }
 
     *layers[0].last().unwrap()
+}
+
+fn find_preceding_number(sequence: &[i32]) -> i32 {
+    let mut layers = compute_layers(sequence);
+
+    // extrapolate preceding number
+    for i in (1..layers.len()).rev() {
+        let first_num = layers[i - 1][0] - layers[i][0];
+        layers[i - 1].insert(0, first_num);
+    }
+
+    layers[0][0]
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -40,8 +58,16 @@ pub fn part_one(input: &str) -> Option<u32> {
     Some(sum_of_next_numbers as u32)
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
-    None
+pub fn part_two(input: &str) -> Option<i32> {
+    let lines = input.lines();
+    let mut sum_of_preceding_numbers = 0;
+
+    for line in lines {
+        let sequence = parse_line_to_sequence(line);
+        sum_of_preceding_numbers += find_preceding_number(&sequence);
+    }
+
+    Some(sum_of_preceding_numbers as i32)
 }
 
 
@@ -58,6 +84,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(2));
     }
 }
